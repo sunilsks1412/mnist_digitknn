@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="static/css/main.css" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Handwriting recognition</title>
+  </head>
+  <body>
+    
+    <br>
+    <div class="row" id="main-row">
+      <div class="container">
+        <h1>Draw a number</h1>
+        <br />
+        <canvas id="canvas"></canvas>
+        <button id="btn" onclick="send_data_drawn()">
+          Predict!
+        </button>
+        <p id="prediction"></p>
+        
+        <!-- <button id="btn" onclick="display_uploaded_image()">
+          Display Uploaded Image!
+        </button> -->
+
+        <!-- <h4>Or upload an image</h4> -->
+        <!-- <p>*Currently only png images are supported</p>
+        <br />
+        <input type="file" name="image" id="image" /> -->
+      </div>
+
+      <!-- <div class="container"> -->
+        <!-- <h1>Image Drawn</h1> -->
+        <!-- <br /> -->
+        <img id="canvasImg" alt="Your image will be displayed here!" />
+        <!-- <br /> -->
+        
+      <!-- </div> -->
+      <!-- <div class="container model-info">
+        <h1 id="title">Info</h1>
+      <p>TITLE : MNIST DIGIT RECOGNIZER</p>
+      <p>ABOUT : DIGIT CLASSIFICATION MODEL USING KNN</p>
+      <p>AUTHOR : Sunil S K</p> -->
+
+      <!-- <br>
+      <br>
+      <h1>Instructions</h1>
+      <ol>
+      <li>Users can either upload an image and display it to predict</li>
+      <li>Or can also draw the images on the canvas</li>
+      <li>We are currently working on improving the preprocessing of canvas image to match the input needs</li>
+    </ol>
+      </div>
+    </div> -->
+
+
+    <script src="static/js/canvas.js"></script>
+    <script>
+      
+      function send_data_drawn() {
+        var imgsrc = document.getElementById("canvasImg").src;
+        console.log(imgsrc);
+        var fd = new FormData();
+        fd.append("image", imgsrc);
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("POST", "/predict", true);
+        document.getElementById("prediction").innerHTML =
+          "Wait Getting Results!..";
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+            document.getElementById("prediction").innerHTML =
+              "Prediction: The number is " + xhr.responseText;
+          }
+        };
+
+        xhr.onload = function () {};
+        xhr.send(fd);
+      }
+
+      function display_uploaded_image() {
+        const fileInput = document.getElementById("image");
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        var src;
+        reader.onloadend = () => {
+          var src = reader.result;
+          var img = document.getElementById("canvasImg");
+          img.setAttribute("src", src);
+        };
+        reader.readAsDataURL(file);
+
+        var imgsrc = document.getElementById("canvasImg").src;
+        console.log("this is image source");
+        console.log(imgsrc);
+      }
+    </script>
+  </body>
+</html>
